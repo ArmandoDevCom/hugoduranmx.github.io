@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  <title>Videojuegos CRUD</title>
+  <link rel="stylesheet" href="estilos.css">
+
+    </head>
+<body>
+ <main class="main-container">   
+    <h1 class="titulo_general">🎁🎮Game Store Wish List🎮🎁</h1>
+ <div class="full_container">    
+    <div class="formulario">  
+    
+  
+        <div id="create-form">
+            <h2 class="titulo_de_formulario">Agregar Videojuego</h2>
+            <form class="espacios_de_frmulario" id="addGameForm">
+                <label for="title">Título:</label>
+                <input type="text" id="title" required>
+  
+                <label for="genre">Género:</label>
+                <input type="text" id="genre" required>
+  
+                <label for="price">Precio:</label>
+                <input type="number" id="price" required>
+  
+                <button type="submit">Agregar</button>
+            </form>
+        </div>
+    </div>
+ <div id="update-form" class="hide">
+    <h2 class="titulo_lista">Modificar Videojuego</h2>
+    <form id="editGameForm">
+      <input type="hidden" id="gameId">
+  
+      <label for="editTitle">Título:</label>
+      <input type="text" id="editTitle" required>
+  
+      <label for="editGenre">Género:</label>
+      <input type="text" id="editGenre" required>
+  
+      <label for="editPrice">Precio:</label>
+      <input type="number" id="editPrice" required>
+  
+      <button type="submit">Guardar</button>
+      <button type="button" onclick="cancelEdit()">Cancelar</button>
+    </form>
+  </div>
+  
+  <div class="gamelist" id="game-list">
+    <h2 class="titulo_lista">Lista de Videojuegos</h2>
+    <table>
+      <thead>
+        <tr class="titulos_columnas">
+          <th>Título</th>
+          <th>Género</th>
+          <th>Precio</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="gameTableBody"></tbody>
+    </table>
+  </div>
+ </div> 
+
+ <footer class="pie_de_pagina">
+    <div class="copy">
+        <p>&copy; 2023 Hecho con ❤️ por Hugo Duran.</p>
+    </div>
+    <div class="redes_sociales">
+        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+             <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+             <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+             <a href="https://www.linkedin.com/in/hugoduranm/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+             <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+    </div>
+ </footer>
+</main> 
+  <script>
+    // Array para almacenar los videojuegos
+    let games = [];
+  
+    // Obtener elementos del DOM
+    const addGameForm = document.getElementById('addGameForm');
+    const editGameForm = document.getElementById('editGameForm');
+    const gameTableBody = document.getElementById('gameTableBody');
+    const updateForm = document.getElementById('update-form');
+  
+    // Función para agregar un videojuego
+    function addGame(event) {
+      event.preventDefault();
+  
+      // Obtener valores del formulario
+      const titleInput = document.getElementById('title');
+      const genreInput = document.getElementById('genre');
+      const priceInput = document.getElementById('price');
+  
+      // Crear objeto videojuego
+      const game = {
+        id: games.length + 1,
+        title: titleInput.value,
+        genre: genreInput.value,
+        price: parseFloat(priceInput.value)
+      };
+  
+      // Agregar videojuego al array
+      games.push(game);
+  
+      // Limpiar formulario
+      titleInput.value = '';
+      genreInput.value = '';
+      priceInput.value = '';
+  
+      // Actualizar tabla
+      renderGameTable();
+    }
+  
+    // Función para editar un videojuego
+    function editGame(event) {
+      event.preventDefault();
+  
+      // Obtener valores del formulario de edición
+      const gameIdInput = document.getElementById('gameId');
+      const editTitleInput = document.getElementById('editTitle');
+      const editGenreInput = document.getElementById('editGenre');
+      const editPriceInput = document.getElementById('editPrice');
+  
+      // Obtener el videojuego a editar
+      const game = games.find(game => game.id === parseInt(gameIdInput.value));
+  
+      // Actualizar los valores del videojuego
+      game.title = editTitleInput.value;
+      game.genre = editGenreInput.value;
+      game.price = parseFloat(editPriceInput.value);
+  
+      // Limpiar formulario de edición
+      gameIdInput.value = '';
+      editTitleInput.value = '';
+      editGenreInput.value = '';
+      editPriceInput.value = '';
+  
+      // Mostrar formulario de creación y ocultar formulario de edición
+      updateForm.classList.add('hide');
+      addGameForm.classList.remove('hide');
+  
+      // Actualizar tabla
+      renderGameTable();
+    }
+  
+    // Función para eliminar un videojuego
+    function deleteGame(gameId) {
+      // Filtrar el videojuego que se va a eliminar
+      games = games.filter(game => game.id !== gameId);
+  
+      // Actualizar tabla
+      renderGameTable();
+    }
+  
+    // Función para mostrar el formulario de edición
+    function showEditForm(gameId) {
+      // Obtener el videojuego a editar
+      const game = games.find(game => game.id === gameId);
+  
+      // Rellenar el formulario de edición con los valores del videojuego
+      document.getElementById('gameId').value = game.id;
+      document.getElementById('editTitle').value = game.title;
+      document.getElementById('editGenre').value = game.genre;
+      document.getElementById('editPrice').value = game.price;
+  
+      // Ocultar formulario de creación y mostrar formulario de edición
+      addGameForm.classList.add('hide');
+      updateForm.classList.remove('hide');
+    }
+  
+    // Función para cancelar la edición y mostrar el formulario de creación
+    function cancelEdit() {
+      updateForm.classList.add('hide');
+      addGameForm.classList.remove('hide');
+    }
+  
+    // Función para renderizar la tabla de videojuegos
+    function renderGameTable() {
+      // Limpiar tabla
+      gameTableBody.innerHTML = '';
+  
+      // Generar filas para cada videojuego en el array
+      games.forEach(game => {
+        const row = document.createElement('tr');
+  
+        const titleCell = document.createElement('td');
+        titleCell.textContent = game.title;
+        row.appendChild(titleCell);
+  
+        const genreCell = document.createElement('td');
+        genreCell.textContent = game.genre;
+        row.appendChild(genreCell);
+  
+        const priceCell = document.createElement('td');
+        priceCell.textContent = game.price.toFixed(2);
+        row.appendChild(priceCell);
+  
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'text-center';
+  
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Editar';
+        editButton.addEventListener('click', () => showEditForm(game.id));
+        actionsCell.appendChild(editButton);
+  
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.addEventListener('click', () => deleteGame(game.id));
+        actionsCell.appendChild(deleteButton);
+  
+        row.appendChild(actionsCell);
+  
+        gameTableBody.appendChild(row);
+      });
+    }
+  
+    // Eventos de formulario
+    addGameForm.addEventListener('submit', addGame);
+    editGameForm.addEventListener('submit', editGame);
+  
+    // Renderizar la tabla inicialmente
+    renderGameTable();
+  </script>
+</body>
+</html>
