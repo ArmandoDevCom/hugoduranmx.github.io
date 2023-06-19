@@ -41,7 +41,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 40px;
-    width: 300px;
+    width: 100vh;
     height: 100%;
     background-color: white;
     margin: 10px;
@@ -49,7 +49,10 @@
   }
 
   .espacios_de_formulario{
-    align-self: center;
+    align-self: normal;
+  }
+
+  .espacios_de_formulario input {
     width: 100%;
   }
 
@@ -65,7 +68,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 40px;
-    width: 300px;
+    width: 100vh;
     height: 100%;
     background-color: white;
     width: 100vh;
